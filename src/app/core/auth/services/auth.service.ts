@@ -16,6 +16,17 @@ export class AuthService {
 
   constructor() {}
 
+  login(credentials: {
+    identifier: string;
+    password: string;
+  }): Observable<User> {
+    return this.http
+      .post<User>(`${environment.TICKETS_API_URL}/auth/local`, credentials)
+      .pipe(
+        tap(response => this.setAuth(response))
+      )
+  }
+
   register(credentials: {
     username: string;
     email: string;
