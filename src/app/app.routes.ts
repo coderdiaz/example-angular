@@ -1,15 +1,35 @@
-import { Routes } from '@angular/router';
+import { Router, Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { map } from 'rxjs';
+import { AuthService } from './core/auth/services/auth.service';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
     path: 'auth',
     loadChildren: () => import('./core/auth/auth.routes')
-      .then((routes) => routes.authRoutes)
+      .then((routes) => routes.authRoutes),
+    canActivate: [
+      () => {
+        // TODO: Move to a specific guard
+        const authService = inject(AuthService);
+        const router = inject(Router)
+        return authService.isAuthenticated
+          .pipe(
+            map(isAuthenticated => {
+              if (!isAuthenticated) {
+                return true;
+              }
+        
+              return router.createUrlTree(['/']);
+            })
+          )
+      }
+    ],
   },
   {
     path: 'tickets',
