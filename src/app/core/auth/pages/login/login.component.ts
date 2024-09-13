@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,12 +18,18 @@ export class LoginComponent {
   emailAddress: string = '';
   password: string = '';
 
+  constructor(
+    private readonly router: Router,
+  ) {}
+
   handleOnSubmit(event: Event) {
     this.authService
       .login({
         identifier: this.emailAddress,
         password: this.password,
       })
-      .subscribe();
+      .pipe().subscribe({
+        next: () => this.router.navigate(['/tickets']),
+      });
   }
 }
