@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -20,6 +20,7 @@ export class SignupComponent {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
   ) {}
 
   handleOnSubmit(event: Event) {
@@ -30,6 +31,8 @@ export class SignupComponent {
         email: this.emailAddress,
         password: this.password,
       })
-      .subscribe();
+      .pipe().subscribe({
+        next: () => this.router.navigate(['/tickets']),
+      });
   }
 }
